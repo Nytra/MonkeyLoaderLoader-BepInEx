@@ -15,6 +15,6 @@ public class Plugin : BasePlugin
 	{
 		Log = base.Log;
 		Log.LogInfo($"Loading MonkeyLoader!");
-		Program.Main(HarmonyInstance);
+		MonkeyLoaderLoader.Load(HarmonyInstance);
 	}
 }

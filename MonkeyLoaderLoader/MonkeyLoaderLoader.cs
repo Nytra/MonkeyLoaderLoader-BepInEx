@@ -87,7 +87,7 @@ class MonkeyLoaderWrapperPatch
 	}
 }
 
-class Program
+class MonkeyLoaderLoader
 {
 	private static readonly FileInfo _monkeyLoaderWrapperPath = new("MonkeyLoaderWrapper.dll");
 	private static Assembly? _monkeyLoaderWrapperAsm;
@@ -106,7 +106,7 @@ class Program
 		}
 	}
 
-	public static void Main(Harmony harmony)
+	public static void Load(Harmony harmony)
 	{
 		try
 		{
@@ -138,7 +138,7 @@ class Program
 		}
 		catch (TargetInvocationException e)
 		{
-			if (e.InnerException is not MonkeyLoaderWrapperPatch.ExplodeException)
+			if (e.InnerException is not MonkeyLoaderWrapperPatch.ExplodeException) // ExplodeException means it worked
 			{
 				Plugin.Log!.LogError($"MonkeyLoaderLoader error: {e}");
 				throw;
