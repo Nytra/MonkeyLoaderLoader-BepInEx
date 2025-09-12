@@ -129,7 +129,6 @@ class Program
 		catch (Exception e)
 		{
 			Plugin.Log!.LogError($"Patching error: {e}");
-			Thread.Sleep(100000);
 			throw;
 		}
 
