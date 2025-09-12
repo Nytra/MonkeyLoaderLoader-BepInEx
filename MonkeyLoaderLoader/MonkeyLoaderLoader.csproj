@@ -5,7 +5,7 @@
     <Authors>Nytra</Authors>
     <TargetFramework>net9.0</TargetFramework>
     <RepositoryUrl>https://github.com/Nytra/MonkeyLoaderLoader-BepInEx</RepositoryUrl>
-    <PackageId>Nytra.MonkeyLoaderLoader.BepInEx</PackageId>
+    <PackageId>Nytra.MonkeyLoaderLoader</PackageId>
     <Product>MonkeyLoaderLoader</Product>
     <RootNamespace>MonkeyLoaderLoader.BepInEx</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
