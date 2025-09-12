@@ -110,9 +110,15 @@ class MonkeyLoaderLoader
 		{
 			PreloadAssemblies();
 		}
+		catch (FileNotFoundException e)
+		{
+			// This just means MonkeyLoader is probably not installed. So just print a small little error message instead of a massive stack trace.
+			Plugin.Log!.LogError($"Could not find a required MonkeyLoader file!\nThis means MonkeyLoader will not be loaded!\nMissing file: {e.FileName}");
+			return;
+		}
 		catch (Exception e)
 		{
-			Plugin.Log!.LogError($"Preload assemblies error: {e}");
+			Plugin.Log!.LogError($"Error occurred when preloading assemblies.");
 			throw;
 		}
 
@@ -126,7 +132,7 @@ class MonkeyLoaderLoader
 		}
 		catch (Exception e)
 		{
-			Plugin.Log!.LogError($"Patching error: {e}");
+			Plugin.Log!.LogError($"Error occurred when patching.");
 			throw;
 		}
 
@@ -138,13 +144,13 @@ class MonkeyLoaderLoader
 		{
 			if (e.InnerException is not MonkeyLoaderWrapperPatch.ExplodeException) // ExplodeException means it worked
 			{
-				Plugin.Log!.LogError($"MonkeyLoaderLoader error: {e}");
+				Plugin.Log!.LogError($"Error occurred in MonkeyLoader code.");
 				throw;
 			}
 		}
 		catch (Exception e)
 		{
-			Plugin.Log!.LogError($"MonkeyLoaderLoader error: {e}");
+			Plugin.Log!.LogError($"Error occurred in MonkeyLoader code.");
 			throw;
 		}
 
