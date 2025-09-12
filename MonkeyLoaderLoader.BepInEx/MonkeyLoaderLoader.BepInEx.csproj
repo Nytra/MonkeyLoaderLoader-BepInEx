@@ -5,9 +5,9 @@
     <Authors>Nytra</Authors>
     <TargetFramework>net9.0</TargetFramework>
     <RepositoryUrl>https://github.com/Nytra/MonkeyLoaderLoader-BepInEx</RepositoryUrl>
-    <PackageId>Nytra.MonkeyLoaderLoader-BepInEx</PackageId>
-    <Product>MonkeyLoaderLoader-BepInEx</Product>
-    <RootNamespace>MonkeyLoaderLoader</RootNamespace>
+    <PackageId>Nytra.MonkeyLoaderLoader.BepInEx</PackageId>
+    <Product>MonkeyLoaderLoader.BepInEx</Product>
+    <RootNamespace>MonkeyLoaderLoader.BepInEx</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Deterministic>true</Deterministic>
@@ -22,6 +22,7 @@
     <RestoreAdditionalProjectSources>
       https://nuget-modding.resonite.net/v3/index.json;
     </RestoreAdditionalProjectSources>
+    <AssemblyName>MonkeyLoaderLoader.BepInEx</AssemblyName>
   </PropertyGroup>
 
   <!-- Modding dependencies -->

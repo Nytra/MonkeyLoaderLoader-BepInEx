@@ -1,12 +1,10 @@
 ﻿using HarmonyLib;
-using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using System.Runtime.Loader;
-using System.Xml.Linq;
 
-namespace MonkeyLoaderLoader;
+namespace MonkeyLoaderLoader.BepInEx;
 
 [HarmonyPatch(typeof(MonkeyLoader.AssemblyLoadContextLoadStrategy), "LoadFile")]
 class MonkeyLoaderPatch

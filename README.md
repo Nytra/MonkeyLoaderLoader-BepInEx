@@ -1,4 +1,4 @@
-# MonkeyLoaderLoader-BepInEx
+# MonkeyLoaderLoader.BepInEx
 [![Thunderstore Badge](https://modding.resonite.net/assets/available-on-thunderstore.svg)](https://thunderstore.io/c/resonite/)
 
 A [Resonite](https://resonite.com/) mod that loads MonkeyLoader when you use BepInEx. You must have already installed the [MonkeyLoader Resonite GamePack](https://github.com/ResoniteModdingGroup/MonkeyLoader.GamePacks.Resonite) for this to work properly.
