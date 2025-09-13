@@ -3,6 +3,8 @@
 
 A BepInEx plugin for [Resonite](https://resonite.com/) that loads MonkeyLoader. You must have already installed the [MonkeyLoader Resonite GamePack](https://github.com/ResoniteModdingGroup/MonkeyLoader.GamePacks.Resonite) for this to work properly.
 
+Note: MonkeyLoader pre-patchers won't work with this.
+
 ## Installation (Manual)
 1. Install [BepisLoader](https://github.com/ResoniteModding/BepisLoader) for Resonite.
 2. Download the latest release ZIP file (e.g., `Nytra-MonkeyLoaderLoader-1.0.0.zip`) from the [Releases](https://github.com/Nytra/MonkeyLoaderLoader-BepInEx/releases) page.
