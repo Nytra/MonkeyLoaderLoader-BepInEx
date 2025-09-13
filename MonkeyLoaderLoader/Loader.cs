@@ -154,8 +154,9 @@ class MonkeyLoaderLoader
 			throw;
 		}
 
+		var resolveNativeLibraryDelegate = (DllImportResolver)Delegate.CreateDelegate(typeof(DllImportResolver), _resolveNativeLibraryMethod);
 		foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-			NativeLibrary.SetDllImportResolver(assembly, (DllImportResolver)Delegate.CreateDelegate(typeof(DllImportResolver), _resolveNativeLibraryMethod));
+			NativeLibrary.SetDllImportResolver(assembly, resolveNativeLibraryDelegate);
 
 		Plugin.Log!.LogInfo("Done!");
 	}
