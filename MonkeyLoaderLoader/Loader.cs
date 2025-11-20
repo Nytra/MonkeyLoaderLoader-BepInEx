@@ -156,7 +156,10 @@ class MonkeyLoaderLoader
 
 		var resolveNativeLibraryDelegate = (DllImportResolver)Delegate.CreateDelegate(typeof(DllImportResolver), _resolveNativeLibraryMethod);
 		foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+		{
+			if (assembly.GetName().Name == "SoundFlow") continue;
 			NativeLibrary.SetDllImportResolver(assembly, resolveNativeLibraryDelegate);
+		}
 
 		Plugin.Log!.LogInfo("Done!");
 	}
