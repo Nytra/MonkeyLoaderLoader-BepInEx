@@ -1,7 +1,9 @@
 # MonkeyLoaderLoader
 [![Thunderstore Badge](https://modding.resonite.net/assets/available-on-thunderstore.svg)](https://thunderstore.io/c/resonite/)
 
-A BepInEx plugin for [Resonite](https://resonite.com/) that loads MonkeyLoader. You must have already installed the [MonkeyLoader Resonite GamePack](https://github.com/ResoniteModdingGroup/MonkeyLoader.GamePacks.Resonite) for this to work properly.
+A BepInEx plugin for [Resonite](https://resonite.com/) that loads MonkeyLoader. You must have already installed the [MonkeyLoader Resonite GamePack](https://github.com/ResoniteModdingGroup/MonkeyLoader.GamePacks.Resonite) for this to work properly. This uses the existing installation in the game folder so if it's not there it won't work.
+
+Note: MonkeyLoader pre-patchers won't work with this.
 
 ## Installation (Manual)
 1. Install [BepisLoader](https://github.com/ResoniteModding/BepisLoader) for Resonite.
