@@ -6,13 +6,12 @@ using System.Runtime.Loader;
 
 namespace MonkeyLoaderLoader.BepInEx;
 
-[HarmonyPatch(typeof(MonkeyLoader.AssemblyLoadContextLoadStrategy), "LoadFile")]
 class MonkeyLoaderPatch
 {
 	// Makes MonkeyLoader check the AppDomain for already loaded assemblies
 	// Also skips loading Resonite.dll https://github.com/ResoniteModding/BepisLoader/issues/2
 
-	private static bool Prefix(string assemblyPath, ref Assembly __result)
+	public static bool Prefix(string assemblyPath, ref Assembly __result)
 	{
 		var name = Path.GetFileNameWithoutExtension(assemblyPath);
 
@@ -116,7 +115,7 @@ class MonkeyLoaderLoader
 			Plugin.Log!.LogError($"Could not find a required MonkeyLoader file!\nThis means MonkeyLoader will not be loaded!\nMissing file: {e.FileName}");
 			return;
 		}
-		catch (Exception e)
+		catch (Exception)
 		{
 			Plugin.Log!.LogError($"Error occurred when preloading assemblies.");
 			throw;
@@ -128,9 +127,12 @@ class MonkeyLoaderLoader
 			_resolveNativeLibraryMethod = AccessTools.Method(targetType, "ResolveNativeLibrary");
 			var targetMethod = AccessTools.GetDeclaredMethods(targetType).FirstOrDefault(m => m.ReturnType == typeof(Task) && m.Name == "Main");
 			harmony.Patch(AccessTools.AsyncMoveNext(targetMethod), transpiler: new(MonkeyLoaderWrapperPatch.Transpiler));
-			harmony.PatchAll();
+
+			var loadStrategyType = AccessTools.TypeByName("MonkeyLoader.AssemblyLoadContextLoadStrategy");
+			var targetMethod2 = AccessTools.Method(loadStrategyType, "LoadFile");
+			harmony.Patch(targetMethod2, prefix: new(MonkeyLoaderPatch.Prefix));
 		}
-		catch (Exception e)
+		catch (Exception)
 		{
 			Plugin.Log!.LogError($"Error occurred when patching.");
 			throw;
@@ -148,7 +150,7 @@ class MonkeyLoaderLoader
 				throw;
 			}
 		}
-		catch (Exception e)
+		catch (Exception)
 		{
 			Plugin.Log!.LogError($"Error occurred in MonkeyLoader code.");
 			throw;
@@ -158,6 +160,7 @@ class MonkeyLoaderLoader
 		foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
 		{
 			if (assembly.GetName().Name == "SoundFlow") continue;
+			if (assembly.GetName().Name == "SharpFont") continue;
 			NativeLibrary.SetDllImportResolver(assembly, resolveNativeLibraryDelegate);
 		}
 
