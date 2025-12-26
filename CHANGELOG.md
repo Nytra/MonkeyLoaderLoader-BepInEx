@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.3] - 26-12-2025
+
+- Fix to load the right MonkeyLoaderWrapper DLL on Linux
+- Remove outdated bug workaround
+
 ## [1.0.2] - 12-12-2025
 
 - Fixed startup due to SharpFont native library resolver

@@ -9,16 +9,11 @@ namespace MonkeyLoaderLoader.BepInEx;
 class MonkeyLoaderPatch
 {
 	// Makes MonkeyLoader check the AppDomain for already loaded assemblies
-	// Also skips loading Resonite.dll https://github.com/ResoniteModding/BepisLoader/issues/2
 
 	public static bool Prefix(string assemblyPath, ref Assembly __result)
 	{
 		var name = Path.GetFileNameWithoutExtension(assemblyPath);
 
-		if (name == "Resonite")
-		{
-			return false;
-		}
 		var asm = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.Location == assemblyPath || a.GetName().Name == name);
 		if (asm != null)
 		{
@@ -86,7 +81,7 @@ class MonkeyLoaderWrapperPatch
 
 class MonkeyLoaderLoader
 {
-	private static readonly FileInfo _monkeyLoaderWrapperPath = new("MonkeyLoaderWrapper.dll");
+	private static readonly FileInfo _monkeyLoaderWrapperPath = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? new("MonkeyLoaderWrapper.Linux.dll") : new("MonkeyLoaderWrapper.dll");
 	private static Assembly? _monkeyLoaderWrapperAsm;
 	private static MethodInfo? _resolveNativeLibraryMethod;
 	
