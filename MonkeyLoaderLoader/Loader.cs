@@ -77,13 +77,18 @@ class MonkeyLoaderWrapperPatch
 			}
 		}
 	}
+
+	/* public static bool LoadUnmanagedDLLPrefix(object __instance, string unmanagedDllName, ref nint __result)
+	{
+		__result = (nint)AccessTools.Method(__instance.GetType().BaseType, "LoadUnmanagedDll").Invoke(__instance, [unmanagedDllName])!;
+		return false;
+	} */
 }
 
 class MonkeyLoaderLoader
 {
 	private static readonly FileInfo _monkeyLoaderWrapperPath = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? new("MonkeyLoaderWrapper.Linux.dll") : new("MonkeyLoaderWrapper.dll");
 	private static Assembly? _monkeyLoaderWrapperAsm;
-	private static MethodInfo? _resolveNativeLibraryMethod;
 	
 	private static void PreloadAssemblies()
 	{
@@ -126,13 +131,16 @@ class MonkeyLoaderLoader
 		try
 		{
 			var targetType = _monkeyLoaderWrapperAsm!.EntryPoint!.DeclaringType;
-			_resolveNativeLibraryMethod = AccessTools.Method(targetType, "ResolveNativeLibrary");
 			var targetMethod = AccessTools.GetDeclaredMethods(targetType).FirstOrDefault(m => m.ReturnType == typeof(Task) && m.Name == "Main");
 			harmony.Patch(AccessTools.AsyncMoveNext(targetMethod), transpiler: new(MonkeyLoaderWrapperPatch.Transpiler));
 
 			var loadStrategyType = AccessTools.TypeByName("MonkeyLoader.AssemblyLoadContextLoadStrategy");
 			var targetMethod2 = AccessTools.Method(loadStrategyType, "LoadFile");
 			harmony.Patch(targetMethod2, prefix: new(MonkeyLoaderPatch.Prefix));
+
+			//var mlLoadContextType = AccessTools.TypeByName("MonkeyLoaderAssemblyLoadContext");
+			//var targetMethod3 = AccessTools.Method(mlLoadContextType, "LoadUnmanagedDll");
+			//harmony.Patch(targetMethod3, prefix: new(MonkeyLoaderWrapperPatch.LoadUnmanagedDLLPrefix));
 		}
 		catch (Exception)
 		{
@@ -156,14 +164,6 @@ class MonkeyLoaderLoader
 		{
 			Plugin.Log!.LogError($"Error occurred in MonkeyLoader code.");
 			throw;
-		}
-
-		var resolveNativeLibraryDelegate = (DllImportResolver)Delegate.CreateDelegate(typeof(DllImportResolver), _resolveNativeLibraryMethod);
-		foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-		{
-			if (assembly.GetName().Name == "SoundFlow") continue;
-			if (assembly.GetName().Name == "SharpFont") continue;
-			NativeLibrary.SetDllImportResolver(assembly, resolveNativeLibraryDelegate);
 		}
 
 		Plugin.Log!.LogInfo("Done!");
