@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.5] - 26-04-2026
+
+- Fix MonkeyLoader v0.31.0 startup crash
+
 ## [1.0.4] - 05-03-2025
 
 - Add ALC Resolving fallback to fix FileLoadException for BepInEx-loaded assemblies (fixes #3)
