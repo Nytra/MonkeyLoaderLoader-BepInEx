@@ -83,18 +83,27 @@ class MonkeyLoaderLoader
 {
 	private static readonly FileInfo _monkeyLoaderWrapperPath = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? new("MonkeyLoaderWrapper.Linux.dll") : new("MonkeyLoaderWrapper.dll");
 	private static Assembly? _monkeyLoaderWrapperAsm;
-	private static MethodInfo? _resolveNativeLibraryMethod;
-	
+
+	private static AssemblyLoadContext LoadContext =>
+		global::BepInEx.Utility.LoadContext
+		?? AssemblyLoadContext.GetLoadContext(typeof(Plugin).Assembly)
+		?? AssemblyLoadContext.Default;
+
+	private static Assembly LoadFromBepInExContext(string assemblyPath)
+	{
+		return LoadContext.LoadFromAssemblyPath(Path.GetFullPath(assemblyPath));
+	}
+
 	private static void PreloadAssemblies()
 	{
-		_monkeyLoaderWrapperAsm = Assembly.LoadFrom(_monkeyLoaderWrapperPath.FullName);
+		_monkeyLoaderWrapperAsm = LoadFromBepInExContext(_monkeyLoaderWrapperPath.FullName);
 		var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
 		foreach (var file in Directory.GetFiles("MonkeyLoader").Where(f => f.EndsWith(".dll")))
 		{
 			var name = Path.GetFileNameWithoutExtension(file);
 			if (loadedAssemblies.Any(a => a.GetName().Name == name)) continue;
 			Plugin.Log!.LogDebug($"Preloading: {name}");
-			Assembly.LoadFrom(file);
+			LoadFromBepInExContext(file);
 		}
 
 		foreach (var alc in AssemblyLoadContext.All)
@@ -126,7 +135,6 @@ class MonkeyLoaderLoader
 		try
 		{
 			var targetType = _monkeyLoaderWrapperAsm!.EntryPoint!.DeclaringType;
-			_resolveNativeLibraryMethod = AccessTools.Method(targetType, "ResolveNativeLibrary");
 			var targetMethod = AccessTools.GetDeclaredMethods(targetType).FirstOrDefault(m => m.ReturnType == typeof(Task) && m.Name == "Main");
 			harmony.Patch(AccessTools.AsyncMoveNext(targetMethod), transpiler: new(MonkeyLoaderWrapperPatch.Transpiler));
 
@@ -156,14 +164,6 @@ class MonkeyLoaderLoader
 		{
 			Plugin.Log!.LogError($"Error occurred in MonkeyLoader code.");
 			throw;
-		}
-
-		var resolveNativeLibraryDelegate = (DllImportResolver)Delegate.CreateDelegate(typeof(DllImportResolver), _resolveNativeLibraryMethod);
-		foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-		{
-			if (assembly.GetName().Name == "SoundFlow") continue;
-			if (assembly.GetName().Name == "SharpFont") continue;
-			NativeLibrary.SetDllImportResolver(assembly, resolveNativeLibraryDelegate);
 		}
 
 		Plugin.Log!.LogInfo("Done!");
